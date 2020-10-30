@@ -12,7 +12,7 @@ By default the dataframe will be written to `elp.csv` (437 MB).
 
 The following columns are created. I tried to keep original column names where possible.
 
-| Column             | Explanation                                                                        |
+| column             | explanation                                                                        |
 |--------------------|------------------------------------------------------------------------------------|
 | Univ               | The number assigned to the university.                                             |
 | Univ_Name          | The name of the university.                                                        |
@@ -33,3 +33,15 @@ The following columns are created. I tried to keep original column names where p
 | Task               | The task completed (all LDT, but may be useful if joining to naming data).         |
 | Date_Demog         | The date associated with the participant's demographics data.                      |
 | Time_Demog         | The time associated with the participant's demographics data.                      |
+| MEQ                | Score from the Morningness-Eveningness Questionnaire                               |
+| Shipley_numCorrect | Score from the Shipley Institute of Living Scale.                                  |
+| Shipley_rawScore   | Score from the Shipley Institute of Living Scale.                                  |
+| Shipley_vocabAge   | Score from the Shipley Institute of Living Scale.                                  |
+| Shipley_shipTime   | Score from the Shipley Institute of Living Scale.                                  |
+| Shipley_readTime   | Score from the Shipley Institute of Living Scale.                                  |
+| presHealth         | A Likert Rating (1-7) of the participant's present health(?)                       |
+| pastHealth         | A Likert Rating (1-7) of the participant's past health(?)                          |
+| vision             | A Likert Rating (1-7) of the participant's vision(?)                               |
+| hearing            | A Likert Rating (1-7) of the participant's hearing(?)                              |
+| firstLang          | The participant's first language.                                                  |
+| file               | The name of the file associated with the data in the OSF.                          |
