@@ -1,2 +1,35 @@
 # read-elp
-Simple R script to fetch and tidy trial-level data from the OSF page for the English Lexicon Project
+
+A simple R script to fetch and tidy trial-level lexcial decision data from the OSF page for the English Lexicon Project.
+
+The trial-level data is available on the OSF page https://osf.io/eu5ca/, but the data format is a pain to work with, and there a few cases of false starts of sessions, data errors, or inconsistent formatting. There is also a dead link in the wiki to a script for reading the data into R.
+
+This script downloads the data from the OSF page, and produces a single dataframe with one trial per row. Demographics and additional information about each subject are also stored in this trial-level dataframe. The script makes a hacky attempt to standardise the date of birth information from the original data (which was entered manually by participants) with the `read_elp_date()` function, and recodes the universities from numeric representations into their full names.
+
+By default the dataframe will be written to `elp.csv` (437 MB).
+
+## Columns
+
+The following columns are created. I tried to keep original column names where possible.
+
+| Column             | Explanation                                                                        |
+|--------------------|------------------------------------------------------------------------------------|
+| Univ               | The number assigned to the university.                                             |
+| Univ_Name          | The name of the university.                                                        |
+| Date               | Date of data collection.                                                           |
+| Time               | Time of data collection.                                                           |
+| Subject            | Subject ID.                                                                        |
+| DOB                | Date of birth (standardised format).                                               |
+| Education          | Years of education.                                                                |
+| Trial_Order        | The number of this trial for this participant.                                     |
+| Item_Serial_Number | An item ID number.                                                                 |
+| Lexicality         | 0 (nonword) or 1 (word).                                                           |
+| Lexicality_label   | "nonword" or "word".                                                               |
+| Accuracy           | Accuracy of response. Mostly 0 (incorrect) and 1 (correct).                        |
+| LDT_RT             | Response time in milliseconds.                                                     |
+| Item               | The text displayed to the participant.                                             |
+| Session_nr         | The number of the session (assuming sets of csv values signify separate sessions). |
+| Gender             | Recorded participant gender.                                                       |
+| Task               | The task completed (all LDT, but may be useful if joining to naming data).         |
+| Date_Demog         | The date associated with the participant's demographics data.                      |
+| Time_Demog         | The time associated with the participant's demographics data.                      |
