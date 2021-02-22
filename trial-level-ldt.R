@@ -198,6 +198,7 @@ read_ldt <- function(file) {
     bind_cols(sess_info, trial_dat) %>%
       mutate(Session_nr = start_end[["session_nr"]])
   }) %>%
+    rename(Orig_Subject = Subject) %>%
     # record university name (based on OSF wiki)
     mutate(
       Univ_Name = recode(
@@ -209,13 +210,14 @@ read_ldt <- function(file) {
         `5` = "Washington University",
         `6` = "Wayne State University"
       ),
-      "Lexicality_Label" = if_else(Lexicality==1, "w", "nw")
+      "Lexicality_Label" = if_else(Lexicality==1, "w", "nw"),
+      "Subject_ID" = paste(Univ, Orig_Subject, sep="_")
     )
   # return the joined data
   bind_cols(trial_dat, info) %>%
     mutate(file = basename(file)) %>%
     select(
-      Univ, Univ_Name, Date, Time, Subject, DOB, Education, Trial_Order, Item_Serial_Number, Lexicality, Lexicality_Label, Accuracy, LDT_RT, Item, Session_nr, Gender, Task, Date_Demog, Time_Demog, MEQ, Shipley_numCorrect, Shipley_rawScore, Shipley_vocabAge, Shipley_shipTime, Shipley_readTime, presHealth, pastHealth, vision, hearing, firstLang, file
+      Univ, Univ_Name, Date, Time, Orig_Subject, Subject_ID, DOB, Education, Trial_Order, Item_Serial_Number, Lexicality, Lexicality_Label, Accuracy, LDT_RT, Item, Session_nr, Gender, Task, Date_Demog, Time_Demog, MEQ, Shipley_numCorrect, Shipley_rawScore, Shipley_vocabAge, Shipley_shipTime, Shipley_readTime, presHealth, pastHealth, vision, hearing, firstLang, file
     )
 }
 
