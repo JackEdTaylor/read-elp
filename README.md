@@ -6,7 +6,7 @@ The trial-level data is available on the OSF page https://osf.io/eu5ca/, but the
 
 This script, `trial-level-ldt.R`, downloads the data from the OSF page, and produces a single dataframe with one trial per row. Demographics and additional information about each subject are also stored in this trial-level dataframe. The script makes a hacky attempt to standardise the date of birth information from the original data (which was entered manually by participants) with the `read_elp_date()` function, and recodes the universities from numeric representations into their full names.
 
-By default the dataframe will be written to `elp.csv` (437 MB).
+By default the dataframe will be written to `elp.csv` (452 MB).
 
 ## Columns
 
