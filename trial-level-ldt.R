@@ -95,6 +95,55 @@ read_elp_date <- function(vec) {
   parse_date(dmy_str, "%d/%m/%Y")
 }
 
+# function to read a vector of comma-delimited strings as a tibble
+# * accepts col_type specification as per readr
+# * assumes first row is headers, unless specified in col_names
+# * will skip empty rows if desired
+# * will treat cells with empty strings ("") as NA
+read_csv_str <- function(csv_str, col_types = cols(), col_names = NA, skip_empty_rows = FALSE) {
+  delimmed <- strsplit(csv_str, ",", fixed=TRUE)
+  
+  # add extra empty strings if any rows are not long enough
+  row_lens <- sapply(delimmed, length)
+  
+  if (length(unique(row_lens)) > 1) {
+    n_col <- max(row_lens)
+    delimmed <- lapply(delimmed, function(x) {
+      if (length(x) < n_col) {
+        c(x, rep("", n_col-length(x)))
+      } else {
+        x
+      }
+    })
+  }
+  
+  # get the column names and data
+  if (all(is.na(col_names))){
+    col_names <- delimmed[[1]]
+    dat <- delimmed[-1]
+  } else {
+    dat <- delimmed
+  }
+  
+  map_df(dat, function(r) {
+    # skip row if empty and desired
+    if (skip_empty_rows) {
+      if (all(r == "")) {
+        return(NULL)
+      }
+    }
+    
+    r %>%
+      sapply(function(i) {
+        if (i=="") NA else i
+      }) %>%
+      set_names(nm = col_names) %>%
+      t() %>%
+      as_tibble()
+  }) %>%
+    type_convert(col_types = col_types)
+}
+
 # function to read a .LDT file
 read_ldt <- function(file) {
   # cat(sprintf("Reading %s\n", basename(file)))
@@ -125,7 +174,7 @@ read_ldt <- function(file) {
   
   
   demog <- file_dat[(sess_info_start_end[1]+1) : (sess_info_start_end[1]+2)] %>%
-    read_csv(
+    read_csv_str(
       col_types = list(col_character(), col_character(), col_character(), col_double(), col_character(), col_character())
     ) %>%
     mutate(
@@ -138,11 +187,11 @@ read_ldt <- function(file) {
     rename(Time_Demog = Time, Date_Demog = Date)
   
   shipley_dat <- file_dat[(sess_info_start_end[1]+4) : (sess_info_start_end[1]+5)] %>%
-    read_csv(col_types = "ddddd") %>%
+    read_csv_str(col_types = "ddddd") %>%
     rename_all(function(x) sprintf("Shipley_%s", x))
   
   health_info <- file_dat[(sess_info_start_end[1]+7) : (sess_info_start_end[1]+8)] %>%
-    read_csv(
+    read_csv_str(
       col_types = list(col_integer(), col_integer(), col_integer(), col_integer(), col_character())
     )
   
@@ -169,7 +218,7 @@ read_ldt <- function(file) {
   trial_dat <- map_df(sess_starts_ends, function(start_end) {
     # get session info as character vector
     sess_info <- file_dat[start_end[["start"]] : (start_end[["start"]]+1)] %>%
-      read_csv(
+      read_csv_str(
         col_types = list(col_integer(), col_character(), col_date("%m-%d-%Y"), col_character(), col_character(), col_integer())
       ) %>%
       mutate(
@@ -188,7 +237,7 @@ read_ldt <- function(file) {
     }
     # get trial data as dataframe
     trial_dat <- trial_char %>%
-      read_csv(
+      read_csv_str(
         skip_empty_rows = TRUE,
         col_names = c("Trial_Order", "Item_Serial_Number", "Lexicality", "Accuracy", "LDT_RT", "Item"),
         col_types = list(col_integer(), col_integer(), col_integer(), col_integer(), col_double(), col_character())
