@@ -134,9 +134,7 @@ read_csv_str <- function(csv_str, col_types = cols(), col_names = NA, skip_empty
     }
     
     r %>%
-      sapply(function(i) {
-        if (i=="") NA else i
-      }) %>%
+      ifelse(.=="", NA, .) %>%
       set_names(nm = col_names) %>%
       t() %>%
       as_tibble()
